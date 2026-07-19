@@ -145,11 +145,14 @@ class Controller extends BaseController
     {
         /** @var Image $image */
         $image = Image::query()
-            ->with('group')
+            ->with(['group', 'strategy'])
             ->where('key', $request->route('key'))
             ->where('extension', strtolower($request->route('extension')))
             ->firstOr(fn() => abort(404));
-        if (! $image->group?->configs->get(GroupConfigKey::IsEnableOriginalProtection)) {
+        if (
+            ! $image->group?->configs->get(GroupConfigKey::IsEnableOriginalProtection) &&
+            ! $image->strategy?->isWebDavProxyEnabled()
+        ) {
             abort(404);
         }
         try {

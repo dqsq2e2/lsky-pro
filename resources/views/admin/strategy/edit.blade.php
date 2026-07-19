@@ -305,8 +305,9 @@
                         @if($strategy->key === \App\Enums\StrategyKey::Webdav)
                         <div class="col-span-6 mb-4" data-driver="{{ \App\Enums\StrategyKey::Webdav }}">
                             <div class="col-span-3 sm:col-span-2 mb-4">
-                                <label for="configs[url]" class="block text-sm font-medium text-gray-700"><span class="text-red-600">*</span>访问域名</label>
+                                <label for="configs[url]" class="block text-sm font-medium text-gray-700">访问域名（直连模式必填）</label>
                                 <x-input type="url" name="configs[url]" id="configs[url]" placeholder="请输入图片访问域名 http(s)://" value="{{ $strategy->configs->get('url') }}" />
+                                <small class="text-gray-500"><i class="fas fa-exclamation-circle"></i> 开启代理模式后可留空，图片链接将使用当前图床域名。</small>
                             </div>
                             <div class="col-span-3 sm:col-span-2 mb-4">
                                 <label for="configs[queries]" class="block text-sm font-medium text-gray-700">URL Queries</label>
@@ -335,6 +336,11 @@
                             <div class="col-span-3 sm:col-span-2 mb-4">
                                 <label for="configs[password]" class="block text-sm font-medium text-gray-700">密码</label>
                                 <x-input type="password" name="configs[password]" id="configs[password]" placeholder="请输入密码" value="{{ $strategy->configs->get('password') }}" />
+                            </div>
+                            <div class="col-span-6">
+                                <label for="webdav-configs[proxy]" class="block text-sm font-medium mb-2 text-gray-700">代理模式</label>
+                                <x-switch id="webdav-configs[proxy]" name="configs[proxy]" value="1" :checked="(bool)$strategy->configs->get('proxy')"></x-switch>
+                                <p><small class="text-gray-500"><i class="fas fa-exclamation-circle"></i> 开启后由图床读取 WebDAV 文件并返回图片，生成的图片链接不会暴露 WebDAV 地址。</small></p>
                             </div>
                         </div>
                         @endif
@@ -373,6 +379,36 @@
                                     <label for="configs[bucket_endpoint]" class="block text-sm font-medium mb-2 text-gray-700">BucketEndpoint</label>
                                     <x-switch id="configs[bucket_endpoint]" name="configs[bucket_endpoint]" value="1" :checked="(bool)$strategy->configs->get('bucket_endpoint')"></x-switch>
                                     <p><small class="text-gray-500"><i class="fas fa-exclamation-circle"></i> 开启此选项后将会直接以「连接地址」作为数据交互传输域名，否则可能会以桶名称拼接域名(例如：http://桶名称.连接地址.com)</small></p>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if($strategy->key === \App\Enums\StrategyKey::R2)
+                            <div class="col-span-6 mb-4" data-driver="{{ \App\Enums\StrategyKey::R2 }}">
+                                <div class="col-span-3 sm:col-span-2 mb-4">
+                                    <label for="r2-configs[url]" class="block text-sm font-medium text-gray-700"><span class="text-red-600">*</span>访问域名</label>
+                                    <x-input type="url" name="configs[url]" id="r2-configs[url]" placeholder="请输入 R2 自定义域名或 r2.dev 域名" value="{{ $strategy->configs->get('url') }}" />
+                                    <small class="text-gray-500"><i class="fas fa-exclamation-circle"></i> 此处用于生成图片链接，不要填写 S3 API 端点。</small>
+                                </div>
+                                <div class="col-span-3 sm:col-span-2 mb-4">
+                                    <label for="r2-configs[queries]" class="block text-sm font-medium text-gray-700">URL Queries</label>
+                                    <x-input type="text" name="configs[queries]" id="r2-configs[queries]" placeholder="请输入 url 额外参数" value="{{ $strategy->configs->get('queries') }}" />
+                                </div>
+                                <div class="col-span-3 sm:col-span-2 mb-4">
+                                    <label for="r2-configs[access_key_id]" class="block text-sm font-medium text-gray-700"><span class="text-red-600">*</span>AccessKeyId</label>
+                                    <x-input type="text" name="configs[access_key_id]" id="r2-configs[access_key_id]" placeholder="请输入 R2 Access Key ID" value="{{ $strategy->configs->get('access_key_id') }}" />
+                                </div>
+                                <div class="col-span-3 sm:col-span-2 mb-4">
+                                    <label for="r2-configs[secret_access_key]" class="block text-sm font-medium text-gray-700"><span class="text-red-600">*</span>SecretAccessKey</label>
+                                    <x-input type="password" name="configs[secret_access_key]" id="r2-configs[secret_access_key]" placeholder="请输入 R2 Secret Access Key" value="{{ $strategy->configs->get('secret_access_key') }}" />
+                                </div>
+                                <div class="col-span-3 sm:col-span-2 mb-4">
+                                    <label for="r2-configs[endpoint]" class="block text-sm font-medium text-gray-700"><span class="text-red-600">*</span>S3 API 端点</label>
+                                    <x-input type="url" name="configs[endpoint]" id="r2-configs[endpoint]" placeholder="https://账户ID.r2.cloudflarestorage.com" value="{{ $strategy->configs->get('endpoint') }}" />
+                                </div>
+                                <div class="col-span-3 sm:col-span-2 mb-4">
+                                    <label for="r2-configs[bucket]" class="block text-sm font-medium text-gray-700"><span class="text-red-600">*</span>储存桶名称</label>
+                                    <x-input type="text" name="configs[bucket]" id="r2-configs[bucket]" placeholder="请输入 R2 Bucket 名称" value="{{ $strategy->configs->get('bucket') }}" />
                                 </div>
                             </div>
                         @endif

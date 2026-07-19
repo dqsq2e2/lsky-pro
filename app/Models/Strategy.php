@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Strategy\WebDavOption;
 use App\Enums\StrategyKey;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -55,6 +56,7 @@ class Strategy extends Model
         StrategyKey::Ftp => 'FTP',
         StrategyKey::Webdav => 'WebDav',
         StrategyKey::Minio => 'Minio',
+        StrategyKey::R2 => 'Cloudflare R2',
     ];
 
     const WEBDAV_AUTH_TYPES = [
@@ -68,7 +70,7 @@ class Strategy extends Model
     {
         static::saving(function (self $strategy) {
             $strategy->configs['root'] = $strategy->configs->get('root');
-            $strategy->configs['url'] = rtrim($strategy->configs->get('url'), '/');
+            $strategy->configs['url'] = rtrim((string)$strategy->configs->get('url'), '/');
             if ($strategy->key == StrategyKey::Local) {
                 $symlink = self::getRootPath($strategy->configs['url']);
                 $target = $strategy->configs['root'] ?: config('filesystems.disks.uploads.root');
@@ -116,5 +118,10 @@ class Strategy extends Model
     public function images(): HasMany
     {
         return $this->hasMany(Image::class, 'strategy_id', 'id');
+    }
+
+    public function isWebDavProxyEnabled(): bool
+    {
+        return $this->key === StrategyKey::Webdav && (bool)$this->configs->get(WebDavOption::Proxy);
     }
 }

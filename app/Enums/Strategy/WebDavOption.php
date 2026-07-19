@@ -21,4 +21,7 @@ final class WebDavOption
 
     /** @var string 地址前缀 */
     const Prefix = 'prefix';
+
+    /** @var string 代理模式 */
+    const Proxy = 'proxy';
 }

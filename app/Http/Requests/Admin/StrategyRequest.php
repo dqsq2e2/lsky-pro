@@ -121,11 +121,13 @@ class StrategyRequest extends FormRequest
                 'configs.passive' => 'required|boolean',
             ],
             StrategyKey::Webdav => [
+                'configs.url' => ['nullable', 'url', 'required_unless:configs.proxy,1'],
                 'configs.base_uri' => 'required',
                 'configs.username' => '',
                 'configs.password' => '',
                 'configs.auth_type' => '',
                 'configs.prefix' => '',
+                'configs.proxy' => 'nullable|boolean',
             ],
             StrategyKey::Minio => [
                 'configs.access_key' => 'required',
@@ -134,6 +136,12 @@ class StrategyRequest extends FormRequest
                 'configs.region' => '',
                 'configs.bucket' => 'required',
                 'configs.bucket_endpoint' => '',
+            ],
+            StrategyKey::R2 => [
+                'configs.access_key_id' => 'required',
+                'configs.secret_access_key' => 'required',
+                'configs.endpoint' => 'required|url',
+                'configs.bucket' => 'required',
             ],
         });
     }
@@ -207,6 +215,7 @@ class StrategyRequest extends FormRequest
                 'configs.password' => '密码',
                 'configs.auth_type' => '认证方式',
                 'configs.prefix' => '前缀',
+                'configs.proxy' => '代理模式',
             ],
             StrategyKey::Minio => [
                 'configs.access_key' => 'AccessKey',
@@ -215,6 +224,12 @@ class StrategyRequest extends FormRequest
                 'configs.region' => '区域',
                 'configs.bucket' => 'Bucket 名称',
                 'configs.bucket_endpoint' => 'BucketEndpoint',
+            ],
+            StrategyKey::R2 => [
+                'configs.access_key_id' => 'AccessKeyId',
+                'configs.secret_access_key' => 'SecretAccessKey',
+                'configs.endpoint' => 'S3 API 端点',
+                'configs.bucket' => '储存桶名称',
             ],
         });
     }

@@ -33,4 +33,7 @@ final class StrategyKey
 
     /** @var int Minio */
     const Minio = 10;
+
+    /** @var int Cloudflare R2 */
+    const R2 = 11;
 }

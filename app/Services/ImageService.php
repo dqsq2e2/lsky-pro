@@ -16,6 +16,7 @@ use App\Enums\Strategy\KodoOption;
 use App\Enums\Strategy\LocalOption;
 use App\Enums\Strategy\MinioOption;
 use App\Enums\Strategy\OssOption;
+use App\Enums\Strategy\R2Option;
 use App\Enums\Strategy\S3Option;
 use App\Enums\Strategy\SftpOption;
 use App\Enums\Strategy\UssOption;
@@ -358,6 +359,18 @@ class ImageService
                     'bucket_endpoint' => (bool)$configs->get(MinioOption::BucketEndpoint),
                 ]),
                 bucket: $configs->get(MinioOption::Bucket),
+            ),
+            StrategyKey::R2 => new AwsS3V3Adapter(
+                client: new S3Client([
+                    'credentials' => [
+                        'key' => $configs->get(R2Option::AccessKeyId),
+                        'secret' => $configs->get(R2Option::SecretAccessKey),
+                    ],
+                    'endpoint' => rtrim($configs->get(R2Option::Endpoint), '/'),
+                    'region' => 'auto',
+                    'version' => 'latest',
+                ]),
+                bucket: $configs->get(R2Option::Bucket),
             ),
         };
     }
