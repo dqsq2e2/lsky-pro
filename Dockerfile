@@ -1,7 +1,11 @@
 FROM php:8.2-apache-bookworm
 
+ARG LSKY_IMAGE_VERSION=development
+
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public \
-    COMPOSER_ALLOW_SUPERUSER=1
+    COMPOSER_ALLOW_SUPERUSER=1 \
+    LSKY_IMAGE_VERSION=${LSKY_IMAGE_VERSION} \
+    WEB_PORT=80
 
 # hadolint ignore=DL3008
 RUN set -eux; \
@@ -42,7 +46,7 @@ RUN set -eux; \
     rm -rf /tmp/pear /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
-COPY docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf.template
 COPY docker/php.ini /usr/local/etc/php/conf.d/lsky.ini
 
 WORKDIR /var/www/html
@@ -81,6 +85,7 @@ RUN cp .env.example .env; \
     chown -R www-data:www-data bootstrap/cache public storage; \
     mkdir -p /var/www/lsky; \
     cp -a /var/www/html/. /var/www/lsky/; \
+    printf '%s\n' "$LSKY_IMAGE_VERSION" > /var/www/lsky/.lsky-image-version; \
     chown -R www-data:www-data /var/www/lsky
 
 COPY docker/entrypoint.sh /usr/local/bin/lsky-entrypoint
@@ -88,7 +93,7 @@ RUN chmod +x /usr/local/bin/lsky-entrypoint
 
 VOLUME ["/var/www/html"]
 
-EXPOSE 80
+EXPOSE 80 8089
 
 ENTRYPOINT ["lsky-entrypoint"]
 CMD ["apache2-foreground"]

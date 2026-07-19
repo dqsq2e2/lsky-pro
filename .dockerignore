@@ -3,6 +3,7 @@
 .idea
 .vscode
 lsky-pro-docker-master
+lsky-pro
 docker-compose.yml
 .env
 .env.*

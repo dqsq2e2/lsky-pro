@@ -3,6 +3,8 @@
 /*.zip
 /node_modules
 /data
+/lsky-pro
+/lsky-pro-docker-master
 /public/hot
 /public/storage
 /public/js/custom.js
