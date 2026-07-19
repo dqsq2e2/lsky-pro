@@ -46,6 +46,30 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.arch }}
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}
 
+      - name: Test persistent volume initialization
+        run: |
+          data_dir="${RUNNER_TEMP}/lsky-data-${{ matrix.arch }}"
+          mkdir -p "$data_dir"
+
+          docker run --rm \
+            --volume "$data_dir:/var/www/html" \
+            "dqsq2e2/lsky-pro:${{ github.ref_name }}-${{ matrix.arch }}" \
+            sh -ec '
+              test -f public/index.php
+              test -f storage/.env
+              grep -Eq "^APP_KEY=.+$" storage/.env
+              test -L .env
+              test -L installed.lock
+              test -L public/i
+              test -L public/storage
+            '
+
+          touch "$data_dir/persisted.marker"
+          docker run --rm \
+            --volume "$data_dir:/var/www/html" \
+            "dqsq2e2/lsky-pro:${{ github.ref_name }}-${{ matrix.arch }}" \
+            test -f persisted.marker
+
   publish:
     name: Publish multi-architecture image
     needs: build

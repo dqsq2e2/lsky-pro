@@ -78,10 +78,15 @@ RUN cp .env.example .env; \
         storage/logs; \
     ln -s storage/.env .env; \
     ln -s storage/installed.lock installed.lock; \
-    chown -R www-data:www-data bootstrap/cache public storage
+    chown -R www-data:www-data bootstrap/cache public storage; \
+    mkdir -p /var/www/lsky; \
+    cp -a /var/www/html/. /var/www/lsky/; \
+    chown -R www-data:www-data /var/www/lsky
 
 COPY docker/entrypoint.sh /usr/local/bin/lsky-entrypoint
 RUN chmod +x /usr/local/bin/lsky-entrypoint
+
+VOLUME ["/var/www/html"]
 
 EXPOSE 80
 

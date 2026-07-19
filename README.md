@@ -60,6 +60,18 @@
 - putenv、getenv 函数
 - chmod、chown、fileperms 函数
 
+### 🐳 Docker / 1Panel 部署
+
+仓库提供的镜像支持将整个程序目录持久化到 `/var/www/html`。当挂载目录为空时，容器会在首次启动时自动复制程序文件、生成 `APP_KEY` 并创建上传目录；后续重启不会覆盖已有文件。
+
+```bash
+docker compose up -d
+```
+
+默认访问端口为 `8089`，可在启动前设置 `PANEL_APP_PORT_HTTP` 修改宿主机端口。持久化数据位于当前目录的 `data` 文件夹，也可以直接在 1Panel 的 Compose 页面导入 `docker-compose.yml`。
+
+安装时如果使用 1Panel 中已有的 MySQL 或 PostgreSQL，请填写数据库容器可访问的主机名或地址，不要填写 `localhost`。
+
 ### 😋 鸣谢
 - [Laravel](https://laravel.com)
 - [Tailwindcss](https://tailwindcss.com)

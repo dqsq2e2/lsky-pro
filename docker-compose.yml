@@ -1,0 +1,9 @@
+services:
+  lsky-pro:
+    image: dqsq2e2/lsky-pro:latest
+    container_name: ${CONTAINER_NAME:-lsky-pro}
+    restart: unless-stopped
+    ports:
+      - "${PANEL_APP_PORT_HTTP:-8089}:80"
+    volumes:
+      - ./data:/var/www/html

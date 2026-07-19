@@ -1,7 +1,17 @@
 #!/bin/sh
 set -eu
 
-cd /var/www/html
+app_dir=/var/www/html
+template_dir=/var/www/lsky
+
+mkdir -p "$app_dir"
+
+if [ ! -f "$app_dir/public/index.php" ]; then
+    echo "Initializing Lsky Pro in $app_dir..."
+    cp -a "$template_dir/." "$app_dir/"
+fi
+
+cd "$app_dir"
 
 mkdir -p \
     bootstrap/cache \
@@ -14,18 +24,29 @@ mkdir -p \
     storage/framework/views \
     storage/logs
 
-if [ ! -e .env ]; then
-    if [ ! -L .env ]; then
-        ln -s storage/.env .env
-    fi
-    cp .env.example .env
+if [ -f .env ] && [ ! -L .env ]; then
+    mv -f .env storage/.env
+fi
+
+if [ ! -f storage/.env ]; then
+    cp .env.example storage/.env
+fi
+
+if [ ! -L .env ]; then
+    rm -f .env
+    ln -s storage/.env .env
 fi
 
 if ! grep -Eq '^APP_KEY=.+$' .env; then
     php artisan key:generate --force --no-interaction
 fi
 
-if [ ! -e installed.lock ] && [ ! -L installed.lock ]; then
+if [ -f installed.lock ] && [ ! -L installed.lock ]; then
+    mv -f installed.lock storage/installed.lock
+fi
+
+if [ ! -L installed.lock ]; then
+    rm -f installed.lock
     ln -s storage/installed.lock installed.lock
 fi
 
