@@ -35,7 +35,7 @@ RUN set -eux; \
         zip; \
     pecl install imagick-3.8.1 redis-6.3.0; \
     docker-php-ext-enable imagick redis; \
-    php -r '$required = ["bcmath", "curl", "dom", "exif", "ftp", "gd", "imagick", "intl", "mbstring", "opcache", "pcntl", "pdo_mysql", "pdo_pgsql", "pdo_sqlite", "redis", "simplexml", "sockets", "xml", "xmlreader", "xmlwriter", "zip"]; foreach ($required as $extension) { if (! extension_loaded($extension)) { fwrite(STDERR, "Missing PHP extension: {$extension}\n"); exit(1); } }'; \
+    php -r '$required = ["bcmath", "curl", "dom", "exif", "ftp", "gd", "imagick", "intl", "mbstring", "Zend OPcache", "pcntl", "pdo_mysql", "pdo_pgsql", "pdo_sqlite", "redis", "simplexml", "sockets", "xml", "xmlreader", "xmlwriter", "zip"]; foreach ($required as $extension) { if (! extension_loaded($extension)) { fwrite(STDERR, "Missing PHP extension: {$extension}\n"); exit(1); } }'; \
     a2enmod expires headers rewrite; \
     rm -rf /tmp/pear /var/lib/apt/lists/*
 
