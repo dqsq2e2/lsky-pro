@@ -67,9 +67,14 @@ jobs:
               test -L public/storage
             '
 
-          touch "$data_dir/persisted.marker"
-          printf 'previous-image\n' > "$data_dir/.lsky-image-version"
-          rm "$data_dir/app/Enums/StrategyKey.php"
+          docker run --rm \
+            --volume "$data_dir:/var/www/html" \
+            "dqsq2e2/lsky-pro:${{ github.ref_name }}-${{ matrix.arch }}" \
+            sh -ec '
+              touch persisted.marker
+              printf "previous-image\n" > .lsky-image-version
+              rm app/Enums/StrategyKey.php
+            '
           docker run --rm \
             --volume "$data_dir:/var/www/html" \
             "dqsq2e2/lsky-pro:${{ github.ref_name }}-${{ matrix.arch }}" \
