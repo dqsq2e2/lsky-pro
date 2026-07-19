@@ -27,6 +27,7 @@ RUN set -eux; \
         ftp \
         gd \
         intl \
+        opcache \
         pcntl \
         pdo_mysql \
         pdo_pgsql \
