@@ -2,11 +2,8 @@ name: Build and publish Docker image
 
 on:
   push:
-    branches:
-      - master
     tags:
-      - 'v*'
-  workflow_dispatch:
+      - '*'
 
 permissions:
   contents: read
@@ -37,12 +34,8 @@ jobs:
         with:
           images: dqsq2e2/lsky-pro
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=ref,event=branch
+            type=raw,value=latest
             type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=sha
 
       - name: Build and push image
         uses: docker/build-push-action@v7
