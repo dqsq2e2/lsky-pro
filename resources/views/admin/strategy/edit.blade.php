@@ -342,6 +342,16 @@
                                 <x-switch id="webdav-configs[proxy]" name="configs[proxy]" value="1" :checked="(bool)$strategy->configs->get('proxy')"></x-switch>
                                 <p><small class="text-gray-500"><i class="fas fa-exclamation-circle"></i> 开启后由图床读取 WebDAV 文件并返回图片，生成的图片链接不会暴露 WebDAV 地址。</small></p>
                             </div>
+                            <div class="col-span-3 sm:col-span-2 mt-4">
+                                <label for="webdav-configs[proxy_cache]" class="block text-sm font-medium mb-2 text-gray-700">代理缓存</label>
+                                <x-switch id="webdav-configs[proxy_cache]" name="configs[proxy_cache]" value="1" :checked="(bool)$strategy->configs->get('proxy_cache')"></x-switch>
+                                <p><small class="text-gray-500"><i class="fas fa-exclamation-circle"></i> 仅在代理模式开启时生效，缓存保存于本机并按 LRU 淘汰。</small></p>
+                            </div>
+                            <div class="col-span-3 sm:col-span-2 mt-4">
+                                <label for="webdav-configs[proxy_cache_limit]" class="block text-sm font-medium text-gray-700">最大缓存文件数</label>
+                                <x-input type="number" min="1" max="10000" name="configs[proxy_cache_limit]" id="webdav-configs[proxy_cache_limit]" value="{{ $strategy->configs->get('proxy_cache_limit', 100) }}"></x-input>
+                                <p><small class="text-gray-500"><i class="fas fa-exclamation-circle"></i> 超出数量后自动删除最久未访问的缓存文件。</small></p>
+                            </div>
                         </div>
                         @endif
 

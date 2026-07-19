@@ -128,6 +128,8 @@ class StrategyRequest extends FormRequest
                 'configs.auth_type' => '',
                 'configs.prefix' => '',
                 'configs.proxy' => 'nullable|boolean',
+                'configs.proxy_cache' => 'nullable|boolean',
+                'configs.proxy_cache_limit' => 'nullable|integer|min:1|max:10000',
             ],
             StrategyKey::Minio => [
                 'configs.access_key' => 'required',
@@ -216,6 +218,8 @@ class StrategyRequest extends FormRequest
                 'configs.auth_type' => '认证方式',
                 'configs.prefix' => '前缀',
                 'configs.proxy' => '代理模式',
+                'configs.proxy_cache' => '代理缓存',
+                'configs.proxy_cache_limit' => '代理缓存文件数',
             ],
             StrategyKey::Minio => [
                 'configs.access_key' => 'AccessKey',

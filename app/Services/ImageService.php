@@ -58,7 +58,6 @@ use League\Flysystem\PhpseclibV3\SftpConnectionProvider;
 use League\Flysystem\WebDAV\WebDAVAdapter;
 use Overtrue\Flysystem\Cos\CosAdapter;
 use Overtrue\Flysystem\Qiniu\QiniuAdapter;
-use Sabre\DAV\Client;
 use TencentCloud\Common\Credential;
 use TencentCloud\Common\Profile\ClientProfile;
 use TencentCloud\Common\Profile\HttpProfile;
@@ -341,12 +340,7 @@ class ImageService
                     'timeout' => 30,
                 ]),
             ),
-            StrategyKey::Webdav => new WebDAVAdapter(new Client(([
-                'baseUri' => $configs->get(WebDavOption::BaseUri),
-                'userName' => $configs->get(WebDavOption::Username),
-                'password' => $configs->get(WebDavOption::Password),
-                'authType' => (int)$configs->get(WebDavOption::AuthType),
-            ])), $configs->get(WebDavOption::Prefix) ?: ''),
+            StrategyKey::Webdav => $this->getWebDavAdapter($strategy),
             StrategyKey::Minio => new AwsS3V3Adapter(
                 client: new S3Client([
                     'credentials' => [
@@ -373,6 +367,26 @@ class ImageService
                 bucket: $configs->get(R2Option::Bucket),
             ),
         };
+    }
+
+    private function getWebDavAdapter(Strategy $strategy): FilesystemAdapter
+    {
+        $configs = $strategy->configs;
+        $adapter = new WebDAVAdapter(new WebDavClient([
+            'baseUri' => $configs->get(WebDavOption::BaseUri),
+            'userName' => $configs->get(WebDavOption::Username),
+            'password' => $configs->get(WebDavOption::Password),
+            'authType' => (int)$configs->get(WebDavOption::AuthType),
+        ]), $configs->get(WebDavOption::Prefix) ?: '');
+
+        if (! $strategy->isWebDavProxyCacheEnabled()) {
+            return $adapter;
+        }
+
+        return new CachedWebDavAdapter(
+            $adapter,
+            new WebDavFileCache((int)$strategy->id, $strategy->getWebDavProxyCacheLimit()),
+        );
     }
 
     /**

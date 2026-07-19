@@ -27,4 +27,27 @@ class StrategyTest extends TestCase
         $this->assertTrue($webdav->isWebDavProxyEnabled());
         $this->assertFalse($r2->isWebDavProxyEnabled());
     }
+
+    public function test_webdav_proxy_cache_requires_proxy_mode()
+    {
+        $cached = new Strategy([
+            'key' => StrategyKey::Webdav,
+            'configs' => [
+                'proxy' => 1,
+                'proxy_cache' => 1,
+                'proxy_cache_limit' => 25,
+            ],
+        ]);
+        $direct = new Strategy([
+            'key' => StrategyKey::Webdav,
+            'configs' => [
+                'proxy' => 0,
+                'proxy_cache' => 1,
+            ],
+        ]);
+
+        $this->assertTrue($cached->isWebDavProxyCacheEnabled());
+        $this->assertSame(25, $cached->getWebDavProxyCacheLimit());
+        $this->assertFalse($direct->isWebDavProxyCacheEnabled());
+    }
 }

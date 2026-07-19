@@ -57,6 +57,10 @@ jobs:
             "dqsq2e2/lsky-pro:${{ github.ref_name }}-${{ matrix.arch }}" \
             sh -ec '
               grep -qx "Listen 80" /etc/apache2/ports.conf
+              php -l app/Services/WebDavClient.php >/dev/null
+              php -l app/Services/WebDavFileCache.php >/dev/null
+              php -l app/Services/CachedWebDavAdapter.php >/dev/null
+              php tests/Smoke/WebDavFeaturesSmoke.php
               test -f public/index.php
               cmp -s /var/www/lsky/.lsky-image-version .lsky-image-version
               test -f storage/.env

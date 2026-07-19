@@ -24,4 +24,10 @@ final class WebDavOption
 
     /** @var string 代理模式 */
     const Proxy = 'proxy';
+
+    /** @var string 代理缓存 */
+    const ProxyCache = 'proxy_cache';
+
+    /** @var string 代理缓存文件数 */
+    const ProxyCacheLimit = 'proxy_cache_limit';
 }

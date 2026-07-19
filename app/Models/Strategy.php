@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\Strategy\WebDavOption;
 use App\Enums\StrategyKey;
+use App\Services\WebDavFileCache;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -94,6 +95,13 @@ class Strategy extends Model
                 $symlink = self::getRootPath($strategy->configs['url']);
                 @unlink(public_path($symlink));
             }
+            WebDavFileCache::clearStrategy($strategy->id);
+        });
+
+        static::saved(function (self $strategy) {
+            if ($strategy->wasChanged(['key', 'configs'])) {
+                WebDavFileCache::clearStrategy($strategy->id);
+            }
         });
     }
 
@@ -123,5 +131,15 @@ class Strategy extends Model
     public function isWebDavProxyEnabled(): bool
     {
         return $this->key === StrategyKey::Webdav && (bool)$this->configs->get(WebDavOption::Proxy);
+    }
+
+    public function isWebDavProxyCacheEnabled(): bool
+    {
+        return $this->isWebDavProxyEnabled() && (bool)$this->configs->get(WebDavOption::ProxyCache);
+    }
+
+    public function getWebDavProxyCacheLimit(): int
+    {
+        return max(1, min(10000, (int)$this->configs->get(WebDavOption::ProxyCacheLimit, 100)));
     }
 }
