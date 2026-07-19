@@ -60,7 +60,7 @@ jobs:
               php -l app/Services/WebDavClient.php >/dev/null
               php -l app/Services/WebDavFileCache.php >/dev/null
               php -l app/Services/CachedWebDavAdapter.php >/dev/null
-              php tests/Smoke/WebDavFeaturesSmoke.php
+              php docker/webdav-features-smoke.php
               test -f public/index.php
               cmp -s /var/www/lsky/.lsky-image-version .lsky-image-version
               test -f storage/.env

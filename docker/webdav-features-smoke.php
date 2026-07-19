@@ -8,7 +8,7 @@ use Sabre\HTTP\RequestInterface;
 use Sabre\HTTP\Response;
 use Sabre\HTTP\ResponseInterface;
 
-require dirname(__DIR__, 2) . '/vendor/autoload.php';
+require dirname(__DIR__) . '/vendor/autoload.php';
 
 $assert = static function (bool $condition, string $message): void {
     if (! $condition) {
